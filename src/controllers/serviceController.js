@@ -13,12 +13,17 @@ function normalizeService(item) {
     description: String(candidate.description ?? ''),
     thumbnailUrl: String(candidate.imageUrl ?? candidate.thumbnailUrl ?? ''),
     artistId: String(candidate.artistId ?? candidate.artist_id ?? ''),
+    isActive: candidate.isActive === true || candidate.is_active === true || candidate.isActive === 'true' || candidate.is_active === 'true',
   };
 }
 
-async function listServices(_req, res) {
+async function listServices(req, res) {
   const services = await serviceRepository.listServices();
-  res.json(services.map(normalizeService));
+  const isAdminRoute = String(req.path || '').startsWith('/admin');
+  const visibleServices = isAdminRoute
+    ? services.map(normalizeService)
+    : services.filter((service) => service.isActive !== false).map(normalizeService);
+  res.json(visibleServices);
 }
 
 async function getServiceById(req, res) {
@@ -30,7 +35,7 @@ async function getServiceById(req, res) {
 }
 
 async function createService(req, res) {
-  const { title, category, durationMin, price, description, thumbnailUrl, artistId } = req.body || {};
+  const { title, category, durationMin, price, description, thumbnailUrl, artistId, isActive } = req.body || {};
 
   if (!title || !category || !durationMin || !price) {
     throw new AppError(400, 'Missing required service fields');
@@ -45,6 +50,7 @@ async function createService(req, res) {
     description: description ? String(description) : undefined,
     thumbnailUrl: thumbnailUrl ? String(thumbnailUrl) : undefined,
     artistId: artistId ? String(artistId) : undefined,
+    isActive: isActive === undefined ? true : Boolean(isActive),
   };
 
   await serviceRepository.createService(service);
@@ -63,6 +69,7 @@ async function updateService(req, res) {
   if (body.description !== undefined) updates.description = String(body.description);
   if (body.thumbnailUrl !== undefined) updates.thumbnailUrl = String(body.thumbnailUrl);
   if (body.artistId !== undefined) updates.artistId = String(body.artistId);
+  if (body.isActive !== undefined) updates.isActive = Boolean(body.isActive);
 
   if (Object.keys(updates).length === 0) {
     throw new AppError(400, 'No service fields provided for update');
@@ -80,10 +87,28 @@ async function deleteService(req, res) {
   res.json({ message: 'Service deleted' });
 }
 
+async function toggleServiceVisibility(req, res) {
+  const serviceId = req.params.id;
+  const body = req.body || {};
+  const isActive = body.isActive !== undefined ? Boolean(body.isActive) : undefined;
+
+  if (isActive === undefined) {
+    throw new AppError(400, 'isActive is required');
+  }
+
+  const updated = await serviceRepository.updateService(serviceId, { isActive });
+  if (!updated) {
+    throw new AppError(404, 'Service not found');
+  }
+
+  res.json(normalizeService(updated));
+}
+
 module.exports = {
   listServices,
   getServiceById,
   createService,
   updateService,
   deleteService,
+  toggleServiceVisibility,
 };

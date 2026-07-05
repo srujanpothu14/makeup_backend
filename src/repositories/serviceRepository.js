@@ -83,6 +83,11 @@ async function updateService(serviceId, updates) {
     expressionValues[':artistId'] = updates.artistId;
     updatesList.push('#artistId = :artistId');
   }
+  if (updates.isActive !== undefined) {
+    expressionNames['#isActive'] = 'isActive';
+    expressionValues[':isActive'] = updates.isActive;
+    updatesList.push('#isActive = :isActive');
+  }
 
   if (updatesList.length === 0) {
     return findByServiceId(serviceId);

@@ -18,6 +18,7 @@ adminRoutes.get('/admin/services', asyncHandler(serviceController.listServices))
 adminRoutes.get('/admin/services/:id', asyncHandler(serviceController.getServiceById));
 adminRoutes.post('/admin/services', asyncHandler(serviceController.createService));
 adminRoutes.put('/admin/services/:id', asyncHandler(serviceController.updateService));
+adminRoutes.patch('/admin/services/:id/visibility', asyncHandler(serviceController.toggleServiceVisibility));
 adminRoutes.delete('/admin/services/:id', asyncHandler(serviceController.deleteService));
 
 adminRoutes.get('/admin/offers', asyncHandler(offerController.listOffers));
