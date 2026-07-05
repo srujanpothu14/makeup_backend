@@ -1,10 +1,4 @@
-const {
-  ScanCommand,
-  GetCommand,
-  PutCommand,
-  UpdateCommand,
-  DeleteCommand,
-} = require('@aws-sdk/lib-dynamodb');
+const { ScanCommand, GetCommand, PutCommand, UpdateCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamo } = require('../config/dynamoClient');
 const env = require('../config/env');
 const { AppError } = require('../utils/appError');
@@ -50,32 +44,32 @@ async function createOffer(offer) {
 async function updateOffer(offerId, updates) {
   assertOffersTableConfigured();
 
-  const attributes = [];
   const expressionNames = {};
   const expressionValues = {};
+  const updatesList = [];
 
   if (updates.title !== undefined) {
-    attributes.push('#title = :title');
     expressionNames['#title'] = 'title';
     expressionValues[':title'] = updates.title;
+    updatesList.push('#title = :title');
   }
   if (updates.description !== undefined) {
-    attributes.push('#description = :description');
     expressionNames['#description'] = 'description';
     expressionValues[':description'] = updates.description;
+    updatesList.push('#description = :description');
   }
   if (updates.serviceId !== undefined) {
-    attributes.push('#serviceId = :serviceId');
     expressionNames['#serviceId'] = 'serviceId';
     expressionValues[':serviceId'] = updates.serviceId;
+    updatesList.push('#serviceId = :serviceId');
   }
   if (updates.discountPercent !== undefined) {
-    attributes.push('#discountPercent = :discountPercent');
     expressionNames['#discountPercent'] = 'discountPercent';
     expressionValues[':discountPercent'] = updates.discountPercent;
+    updatesList.push('#discountPercent = :discountPercent');
   }
 
-  if (attributes.length === 0) {
+  if (updatesList.length === 0) {
     return findByOfferId(offerId);
   }
 
@@ -83,7 +77,7 @@ async function updateOffer(offerId, updates) {
     new UpdateCommand({
       TableName: env.offersTableName,
       Key: { offer_id: offerId },
-      UpdateExpression: `SET ${attributes.join(', ')}`,
+      UpdateExpression: `SET ${updatesList.join(', ')}`,
       ExpressionAttributeNames: expressionNames,
       ExpressionAttributeValues: expressionValues,
       ConditionExpression: 'attribute_exists(offer_id)',

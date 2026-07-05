@@ -96,44 +96,6 @@ async function getBusinessDetailsById(businessId) {
   return (result.Items && result.Items[0]) || null;
 }
 
-async function upsertBusinessDetails(details) {
-  assertBusinessDetailsTableConfigured();
-
-  const item = {
-    [BUSINESS_DETAILS_KEY_NAME]: BUSINESS_DETAILS_KEY,
-    ...details,
-  };
-
-  try {
-    await dynamo.send(
-      new PutCommand({
-        TableName: env.businessDetailsTableName,
-        Item: item,
-      }),
-    );
-    return item;
-  } catch (error) {
-    if (isValidationException(error)) {
-      const existing = await getFirstBusinessDetailsItem();
-      if (!existing) {
-        throw new AppError(
-          500,
-          'Unable to write business details: table key schema does not match expected layout',
-        );
-      }
-      const merged = { ...existing, ...details };
-      await dynamo.send(
-        new PutCommand({
-          TableName: env.businessDetailsTableName,
-          Item: merged,
-        }),
-      );
-      return merged;
-    }
-    throw error;
-  }
-}
-
 async function updateBusinessDetails(updates) {
   assertBusinessDetailsTableConfigured();
 
@@ -199,6 +161,5 @@ async function updateBusinessDetails(updates) {
 module.exports = {
   getBusinessDetails,
   getBusinessDetailsById,
-  upsertBusinessDetails,
   updateBusinessDetails,
 };

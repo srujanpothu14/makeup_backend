@@ -17,6 +17,9 @@ module.exports = {
   bookingsTableName: process.env.DYNAMODB_BOOKINGS_TABLE || '',
   galleryTableName: process.env.DYNAMODB_GALLERY_TABLE || '',
   reviewsTableName: process.env.DYNAMODB_REVIEWS_TABLE || '',
+  s3Bucket: process.env.AWS_S3_BUCKET || '',
+  s3GalleryPrefix: process.env.AWS_S3_GALLERY_PREFIX || 'gallery/',
+  s3PublicUrl: process.env.AWS_S3_PUBLIC_URL || '',
   bcryptSaltRounds: Number(process.env.BCRYPT_SALT_ROUNDS || 10),
   dynamoEndpoint: process.env.AWS_DYNAMODB_ENDPOINT || undefined,
 };

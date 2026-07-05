@@ -1,4 +1,4 @@
-const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
+const { ScanCommand, GetCommand, PutCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamo } = require('../config/dynamoClient');
 const env = require('../config/env');
 const { AppError } = require('../utils/appError');
@@ -19,6 +19,54 @@ async function listGalleryMedia() {
   return Array.isArray(result.Items) ? result.Items : [];
 }
 
+async function findByMediaId(mediaId) {
+  assertGalleryTableConfigured();
+  const result = await dynamo.send(
+    new GetCommand({
+      TableName: env.galleryTableName,
+      Key: { media_id: mediaId },
+    }),
+  );
+  return result.Item || null;
+}
+
+async function createGalleryMedia(media) {
+  assertGalleryTableConfigured();
+  await dynamo.send(
+    new PutCommand({
+      TableName: env.galleryTableName,
+      Item: media,
+      ConditionExpression: 'attribute_not_exists(media_id)',
+    }),
+  );
+}
+
+async function updateGalleryMedia(media) {
+  assertGalleryTableConfigured();
+  await dynamo.send(
+    new PutCommand({
+      TableName: env.galleryTableName,
+      Item: media,
+      ConditionExpression: 'attribute_exists(media_id)',
+    }),
+  );
+}
+
+async function deleteGalleryMedia(mediaId) {
+  assertGalleryTableConfigured();
+  await dynamo.send(
+    new DeleteCommand({
+      TableName: env.galleryTableName,
+      Key: { media_id: mediaId },
+      ConditionExpression: 'attribute_exists(media_id)',
+    }),
+  );
+}
+
 module.exports = {
   listGalleryMedia,
+  findByMediaId,
+  createGalleryMedia,
+  updateGalleryMedia,
+  deleteGalleryMedia,
 };

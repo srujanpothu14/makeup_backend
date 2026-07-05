@@ -1,4 +1,4 @@
-const { ScanCommand, PutCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
+const { ScanCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamo } = require('../config/dynamoClient');
 const env = require('../config/env');
 const { AppError } = require('../utils/appError');
@@ -31,19 +31,7 @@ async function listBookings() {
   return Array.isArray(result.Items) ? result.Items : [];
 }
 
-async function findBookingById(bookingId) {
-  assertBookingsTableConfigured();
-  const result = await dynamo.send(
-    new GetCommand({
-      TableName: env.bookingsTableName,
-      Key: { booking_id: bookingId },
-    }),
-  );
-  return result.Item || null;
-}
-
 module.exports = {
   createBooking,
   listBookings,
-  findBookingById,
 };

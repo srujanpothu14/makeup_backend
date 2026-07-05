@@ -4,8 +4,10 @@ const { AppError } = require('../utils/appError');
 
 function normalizeOffer(item) {
   const candidate = item || {};
+  const offerId = String(candidate.offer_id ?? candidate.id ?? '');
   return {
-    id: String(candidate.offer_id ?? candidate.id ?? ''),
+    offer_id: offerId,
+    id: offerId,
     title: String(candidate.title ?? ''),
     description: String(candidate.description ?? ''),
     serviceId: String(candidate.serviceId ?? candidate.service_id ?? ''),
@@ -27,7 +29,7 @@ async function getOfferById(req, res) {
 }
 
 async function createOffer(req, res) {
-  const { title, description, serviceId, discountPercent, offer_id } = req.body || {};
+  const { offer_id, title, description, serviceId, discountPercent } = req.body || {};
 
   if (!title || !serviceId || discountPercent === undefined) {
     throw new AppError(400, 'Missing required offer fields');
@@ -36,7 +38,7 @@ async function createOffer(req, res) {
   const offer = {
     offer_id: offer_id ? String(offer_id) : `o${crypto.randomUUID()}`,
     title: String(title),
-    description: description ? String(description) : undefined,
+    description: description ? String(description) : '',
     serviceId: String(serviceId),
     discountPercent: Number(discountPercent),
   };
@@ -47,8 +49,8 @@ async function createOffer(req, res) {
 
 async function updateOffer(req, res) {
   const offerId = req.params.id;
-  const updates = {};
   const body = req.body || {};
+  const updates = {};
 
   if (body.title !== undefined) updates.title = String(body.title);
   if (body.description !== undefined) updates.description = String(body.description);
