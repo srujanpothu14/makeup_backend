@@ -16,6 +16,7 @@ module.exports = {
   businessDetailsTableName: process.env.DYNAMODB_BUSINESS_DETAILS_TABLE || '',
   bookingsTableName: process.env.DYNAMODB_BOOKINGS_TABLE || '',
   galleryTableName: process.env.DYNAMODB_GALLERY_TABLE || '',
+  reviewsTableName: process.env.DYNAMODB_REVIEWS_TABLE || '',
   bcryptSaltRounds: Number(process.env.BCRYPT_SALT_ROUNDS || 10),
   dynamoEndpoint: process.env.AWS_DYNAMODB_ENDPOINT || undefined,
 };

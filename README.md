@@ -23,7 +23,6 @@ The backend is structured in layers:
 - `src/services`: business logic
 - `src/repositories`: DynamoDB data access
 - `src/middleware`: reusable Express middleware
-- `src/data`: static catalog and in-memory booking data
 - `src/utils`: shared helpers and error utilities
 
 Entry points:
