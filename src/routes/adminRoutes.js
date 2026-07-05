@@ -7,6 +7,18 @@ const { asyncHandler } = require('../utils/asyncHandler');
 
 const adminRoutes = express.Router();
 
+/**
+ * @openapi
+ * /admin/users:
+ *   get:
+ *     summary: List users
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User list
+ */
 adminRoutes.get('/admin/users', asyncHandler(userController.listUsers));
 adminRoutes.get('/admin/users/:mobileNumber', asyncHandler(userController.getUserByMobileNumber));
 adminRoutes.put('/admin/users/:mobileNumber', asyncHandler(userController.updateUser));
@@ -14,6 +26,18 @@ adminRoutes.delete('/admin/users/:mobileNumber', asyncHandler(userController.del
 adminRoutes.get('/admin/settings', asyncHandler(siteSettingsController.getBusinessDetails));
 adminRoutes.put('/admin/settings', asyncHandler(siteSettingsController.updateBusinessDetails));
 
+/**
+ * @openapi
+ * /admin/services:
+ *   get:
+ *     summary: List all services for admin
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: All services including inactive ones
+ */
 adminRoutes.get('/admin/services', asyncHandler(serviceController.listServices));
 adminRoutes.get('/admin/services/:id', asyncHandler(serviceController.getServiceById));
 adminRoutes.post('/admin/services', asyncHandler(serviceController.createService));
@@ -21,6 +45,18 @@ adminRoutes.put('/admin/services/:id', asyncHandler(serviceController.updateServ
 adminRoutes.patch('/admin/services/:id/visibility', asyncHandler(serviceController.toggleServiceVisibility));
 adminRoutes.delete('/admin/services/:id', asyncHandler(serviceController.deleteService));
 
+/**
+ * @openapi
+ * /admin/offers:
+ *   get:
+ *     summary: List offers for admin
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Offer list
+ */
 adminRoutes.get('/admin/offers', asyncHandler(offerController.listOffers));
 adminRoutes.get('/admin/offers/:id', asyncHandler(offerController.getOfferById));
 adminRoutes.post('/admin/offers', asyncHandler(offerController.createOffer));

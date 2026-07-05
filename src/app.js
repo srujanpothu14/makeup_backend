@@ -1,15 +1,42 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
 const env = require('./config/env');
 const { createApiRouter } = require('./routes/apiRouter');
 const { AppError } = require('./utils/appError');
 
 const app = express();
 
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Makeup Backend API',
+      version: '1.0.0',
+      description: 'API documentation for the makeup backend service',
+    },
+    servers: [{ url: `http://localhost:${env.port}` }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+  },
+  apis: ['./src/routes/*.js'],
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(express.json());
 app.use('/admin', express.static(path.join(__dirname, '../..', 'makeup_admin')));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/', createApiRouter());
 app.use('/api', createApiRouter());
