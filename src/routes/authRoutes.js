@@ -11,6 +11,7 @@ const authRoutes = express.Router();
  *   post:
  *     summary: Login user
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -34,6 +35,7 @@ authRoutes.post('/auth/login', asyncHandler(authController.login));
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:

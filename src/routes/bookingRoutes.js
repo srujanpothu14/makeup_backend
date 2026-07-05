@@ -1,7 +1,6 @@
 const express = require('express');
 const bookingController = require('../controllers/bookingController');
 const { asyncHandler } = require('../utils/asyncHandler');
-const { authMiddleware } = require('../middleware/authMiddleware');
 
 const bookingRoutes = express.Router();
 
@@ -38,7 +37,7 @@ const bookingRoutes = express.Router();
  *       201:
  *         description: Booking created
  */
-bookingRoutes.post('/bookings', authMiddleware, asyncHandler(bookingController.createBooking));
+bookingRoutes.post('/bookings', asyncHandler(bookingController.createBooking));
 
 /**
  * @openapi
@@ -60,7 +59,6 @@ bookingRoutes.post('/bookings', authMiddleware, asyncHandler(bookingController.c
  */
 bookingRoutes.get(
   '/bookings/customer/:userId',
-  authMiddleware,
   asyncHandler(bookingController.listCustomerBookings),
 );
 
@@ -81,6 +79,6 @@ bookingRoutes.get(
  *       200:
  *         description: List of bookings
  */
-bookingRoutes.get('/bookings', authMiddleware, asyncHandler(bookingController.listBookings));
+bookingRoutes.get('/bookings', asyncHandler(bookingController.listBookings));
 
 module.exports = { bookingRoutes };

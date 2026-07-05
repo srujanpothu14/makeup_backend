@@ -18,6 +18,7 @@ const swaggerOptions = {
       description: 'API documentation for the makeup backend service',
     },
     servers: [{ url: `http://localhost:${env.port}` }],
+    security: [{ bearerAuth: [] }],
     components: {
       securitySchemes: {
         bearerAuth: {
