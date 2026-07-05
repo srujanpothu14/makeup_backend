@@ -13,9 +13,7 @@ catalogRoutes.post('/services', asyncHandler(serviceController.createService));
 catalogRoutes.get('/offers', asyncHandler(offerController.listOffers));
 catalogRoutes.get('/offers/:id', asyncHandler(offerController.getOfferById));
 
-catalogRoutes.get('/gallery/media', asyncHandler(catalogController.listGalleryMedia));
 catalogRoutes.get('/gallery', asyncHandler(catalogController.listGalleryMedia));
-catalogRoutes.get('/media', asyncHandler(catalogController.listGalleryMedia));
 catalogRoutes.get('/reviews', asyncHandler(catalogController.listReviews));
 catalogRoutes.get('/feedbacks', asyncHandler(catalogController.listReviews));
 catalogRoutes.get('/testimonials', asyncHandler(catalogController.listReviews));
