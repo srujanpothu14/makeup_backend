@@ -2,10 +2,28 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const defaultCorsOrigins = [
+  'http://localhost:4200',
+  'http://localhost:4201',
+  'http://16.113.23.201',
+  'http://16.113.23.201:4200',
+  'http://16.113.23.201:5000',
+];
+
+function parseCorsOrigins(value) {
+  const origins = String(value || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return origins.length ? origins : defaultCorsOrigins;
+}
+
 module.exports = {
   port: Number(process.env.PORT || 5000),
   jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+  corsOrigins: parseCorsOrigins(process.env.CORS_ORIGIN),
+  corsAllowAll: String(process.env.CORS_ALLOW_ALL || '').toLowerCase() === 'true',
   awsRegion: process.env.AWS_REGION || 'ap-south-1',
   awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
   awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',

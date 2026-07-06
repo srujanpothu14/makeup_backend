@@ -1,11 +1,11 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const env = require('./config/env');
 const { createApiRouter } = require('./routes/apiRouter');
+const { createCorsMiddleware } = require('./middleware/corsMiddleware');
 const { AppError } = require('./utils/appError');
 
 const app = express();
@@ -86,23 +86,7 @@ function serveAdminUi(req, res, next) {
   });
 }
 
-const corsOrigins = String(env.corsOrigin || 'http://localhost:4200,http://localhost:4201')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || corsOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-      callback(null, false);
-    },
-    credentials: true,
-  }),
-);
+app.use(createCorsMiddleware());
 app.use(express.json());
 app.use(serveAdminUi);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
