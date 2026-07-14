@@ -9,6 +9,7 @@ const healthRoutes = express.Router();
  *   get:
  *     summary: Health check
  *     tags: [Health]
+ *     security: []
  *     responses:
  *       200:
  *         description: Service is healthy

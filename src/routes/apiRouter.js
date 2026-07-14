@@ -11,8 +11,8 @@ function createApiRouter() {
   const router = express.Router();
 
   router.use(authRoutes);
-  router.use(authMiddleware);
   router.use(healthRoutes);
+  router.use(authMiddleware);
   router.use(catalogRoutes);
   router.use(bookingRoutes);
   router.use(siteSettingsRoutes);

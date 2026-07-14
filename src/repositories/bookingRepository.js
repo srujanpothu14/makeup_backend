@@ -1,4 +1,4 @@
-const { ScanCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
+const { ScanCommand, PutCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamo } = require('../config/dynamoClient');
 const env = require('../config/env');
 const { AppError } = require('../utils/appError');
@@ -31,7 +31,23 @@ async function listBookings() {
   return Array.isArray(result.Items) ? result.Items : [];
 }
 
+async function updateBookingStatus(bookingId, status) {
+  assertBookingsTableConfigured();
+  const result = await dynamo.send(
+    new UpdateCommand({
+      TableName: env.bookingsTableName,
+      Key: { booking_id: bookingId },
+      UpdateExpression: 'SET #status = :status',
+      ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeValues: { ':status': status },
+      ReturnValues: 'ALL_NEW',
+    }),
+  );
+  return result.Attributes;
+}
+
 module.exports = {
   createBooking,
   listBookings,
+  updateBookingStatus,
 };

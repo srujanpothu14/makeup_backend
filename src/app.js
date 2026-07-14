@@ -36,7 +36,7 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 const adminStaticPath = path.join(__dirname, '../..', 'makeup_admin/dist/admin/browser');
-const adminApiPattern = /^\/admin\/(users|services|offers|settings|bookings|gallery)(\/|$)/;
+const adminApiPattern = /^\/admin\/(users|services|offers|settings|bookings(\/[^/]+\/status)?|gallery)(\/|$)/;
 const adminStaticHandler = express.static(adminStaticPath);
 
 function serveAdminUi(req, res, next) {
@@ -91,8 +91,8 @@ app.use(express.json());
 app.use(serveAdminUi);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use('/', createApiRouter());
 app.use('/api', createApiRouter());
+app.use('/', createApiRouter());
 
 app.use((req, _res, next) => {
   next(new AppError(404, `Route not found: ${req.method} ${req.path}`));

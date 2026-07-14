@@ -55,6 +55,7 @@ adminRoutes.put('/admin/offers/:id', asyncHandler(offerController.updateOffer));
 adminRoutes.delete('/admin/offers/:id', asyncHandler(offerController.deleteOffer));
 
 adminRoutes.get('/admin/bookings', asyncHandler(bookingController.listBookings));
+adminRoutes.patch('/admin/bookings/:id/status', asyncHandler(bookingController.updateBookingStatus));
 
 adminRoutes.get('/admin/gallery', asyncHandler(catalogController.listGalleryMedia));
 adminRoutes.get('/admin/gallery/:id', asyncHandler(catalogController.getGalleryMediaById));

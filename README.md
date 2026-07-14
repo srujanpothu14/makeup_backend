@@ -63,7 +63,7 @@ Stored user item shape:
 
 All routes are available with and without the `/api` prefix.
 
-All endpoints except `POST /auth/register` and `POST /auth/login` require:
+All endpoints except `GET /health`, `POST /auth/register`, and `POST /auth/login` require:
 
 ```http
 Authorization: Bearer <token>
@@ -73,7 +73,7 @@ Authorization: Bearer <token>
 
 #### GET /health
 
-Protected. Returns service health.
+Public. Returns service health.
 
 Request body: none
 
